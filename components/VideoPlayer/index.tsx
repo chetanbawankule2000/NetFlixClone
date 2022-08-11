@@ -11,6 +11,8 @@ interface VideoPlayerProps {
 const VideoPlayer = (props: VideoPlayerProps) => {
   const { episode } = props;
   const [status, setStatus] = useState({});
+
+  const [videoUrl, setVideoUrl] = useState("");
   const video = useRef<Playback>(null);
 
   useEffect(() => {

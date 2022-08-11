@@ -14,11 +14,13 @@ import {
 } from "@expo/vector-icons";
 import EposodeItem from "../../components/EpisodeItem";
 import VideoPlayer from "../../components/VideoPlayer";
+import { useRoute } from "@react-navigation/native";
 
 const firstEpisode = movie.seasons.items[0].episodes.items[0];
 const firstSeason = movie.seasons.items[0];
 
 const MovieDetailsScreen = () => {
+  const route = useRoute();
   const seasonName = movie.seasons.items.map((s) => s.name);
 
   const [currentSeason, setCurrentSeason] = useState(firstSeason);

@@ -3,29 +3,42 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
-import { AntDesign, MaterialIcons, Ionicons } from '@expo/vector-icons'; 
+import { FontAwesome } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import * as React from "react";
+import { ColorSchemeName, Pressable } from "react-native";
+import { AntDesign, MaterialIcons, Ionicons } from "@expo/vector-icons";
 
-import Colors from '../constants/Colors';
-import useColorScheme from '../hooks/useColorScheme';
-import ModalScreen from '../screens/ModalScreen';
-import NotFoundScreen from '../screens/NotFoundScreen';
-import HomeScreen from '../screens/HomeScreen';
-import MovieDetailsScreen from '../screens/MovieDetailsScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
-import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
-import LinkingConfiguration from './LinkingConfiguration';
+import Colors from "../constants/Colors";
+import useColorScheme from "../hooks/useColorScheme";
+import ModalScreen from "../screens/ModalScreen";
+import NotFoundScreen from "../screens/NotFoundScreen";
+import HomeScreen from "../screens/HomeScreen";
+import MovieDetailsScreen from "../screens/MovieDetailsScreen";
+import TabTwoScreen from "../screens/TabTwoScreen";
+import {
+  RootStackParamList,
+  RootTabParamList,
+  RootTabScreenProps,
+} from "../types";
+import LinkingConfiguration from "./LinkingConfiguration";
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+export default function Navigation({
+  colorScheme,
+}: {
+  colorScheme: ColorSchemeName;
+}) {
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
-      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+    >
       <RootNavigator />
     </NavigationContainer>
   );
@@ -40,8 +53,16 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Stack.Screen
+        name="Root"
+        component={BottomTabNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="NotFound"
+        component={NotFoundScreen}
+        options={{ title: "Oops!" }}
+      />
     </Stack.Navigator>
   );
 }
@@ -60,38 +81,47 @@ function BottomTabNavigator() {
       initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
-      }}>
+      }}
+    >
       <BottomTab.Screen
         name="Home"
         component={TabOneNavigator}
-        options={({ navigation }: RootTabScreenProps<'Home'>) => ({
-          title: 'Home',
-          headerShown:false,
-          tabBarIcon: ({ color }) => <AntDesign name="home" size={24} color={color} />,
+        options={({ navigation }: RootTabScreenProps<"Home">) => ({
+          title: "Home",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="home" size={24} color={color} />
+          ),
         })}
       />
       <BottomTab.Screen
         name="Comming Soon"
         component={TabTwoNavigator}
         options={{
-          title: 'Comming Soon',
-          tabBarIcon: ({ color }) => <MaterialIcons name="video-library" size={24} color={color} /> ,
+          title: "Comming Soon",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="video-library" size={24} color={color} />
+          ),
         }}
       />
-       <BottomTab.Screen
+      <BottomTab.Screen
         name="Search"
         component={TabTwoNavigator}
         options={{
-          title: 'Search',
-          tabBarIcon: ({ color }) => <Ionicons name="search" size={24} color={color} /> ,
+          title: "Search",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="search" size={24} color={color} />
+          ),
         }}
       />
-       <BottomTab.Screen
+      <BottomTab.Screen
         name="Downloads"
         component={TabTwoNavigator}
         options={{
-          title: 'Downloads',
-          tabBarIcon: ({ color }) => <AntDesign name="download" size={24} color={color} />,
+          title: "Downloads",
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="download" size={24} color={color} />
+          ),
         }}
       />
     </BottomTab.Navigator>
@@ -100,51 +130,44 @@ function BottomTabNavigator() {
 
 // Create Stack navigator for Home bottom Tab
 
-const HomeStack = createNativeStackNavigator()
+const HomeStack = createNativeStackNavigator();
 
-const TabOneNavigator = ()=>{
-  return(
+const TabOneNavigator = () => {
+  return (
     <HomeStack.Navigator>
-
-      <HomeStack.Screen 
-      name='MovieDetailsScreen'
-      component={MovieDetailsScreen}
-      options={{title:''}}
+      <HomeStack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{ headerShown: false }}
       />
-
-      <HomeStack.Screen 
-      name='HomeScreen'
-      component={HomeScreen}
-      options={{headerShown:false}}
+      <HomeStack.Screen
+        name="MovieDetailsScreen"
+        component={MovieDetailsScreen}
+        options={{ title: "" }}
       />
-
-
     </HomeStack.Navigator>
-  )
-}
+  );
+};
 
 const CommingSoomStack = createNativeStackNavigator();
 
-const TabTwoNavigator = ()=>{
-  return(
+const TabTwoNavigator = () => {
+  return (
     <CommingSoomStack.Navigator>
-      <CommingSoomStack.Screen 
-      name='CommingSoonScreen'
-      component={TabTwoScreen}
-      options={{headerShown:false}}
-
+      <CommingSoomStack.Screen
+        name="CommingSoonScreen"
+        component={TabTwoScreen}
+        options={{ headerShown: false }}
       />
-
     </CommingSoomStack.Navigator>
-  )
-}
-
+  );
+};
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
+  name: React.ComponentProps<typeof FontAwesome>["name"];
   color: string;
 }) {
   return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
