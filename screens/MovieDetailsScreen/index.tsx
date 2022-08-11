@@ -13,6 +13,7 @@ import {
   FontAwesome,
 } from "@expo/vector-icons";
 import EposodeItem from "../../components/EpisodeItem";
+import VideoPlayer from "../../components/VideoPlayer";
 
 const firstEpisode = movie.seasons.items[0].episodes.items[0];
 const firstSeason = movie.seasons.items[0];
@@ -21,12 +22,17 @@ const MovieDetailsScreen = () => {
   const seasonName = movie.seasons.items.map((s) => s.name);
 
   const [currentSeason, setCurrentSeason] = useState(firstSeason);
+  const [currentEpisode, setCurrentEpisode] = useState(
+    firstSeason.episodes.items[0]
+  );
   return (
     <View style={{ flex: 1 }}>
-      <Image source={{ uri: firstEpisode.poster }} style={styles.image} />
+      <VideoPlayer episode={currentEpisode} />
       <FlatList
         data={currentSeason.episodes.items}
-        renderItem={({ item }) => <EposodeItem episode={item} />}
+        renderItem={({ item }) => (
+          <EposodeItem episode={item} onPress={setCurrentEpisode} />
+        )}
         ListHeaderComponent={
           <>
             <View style={{ padding: 15 }}>
