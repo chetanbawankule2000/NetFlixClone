@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-netflix-staging-60932-authRole",
+      "UnauthRoleArn": "arn:aws:iam::035607060023:role/amplify-netflix-staging-60932-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::035607060023:role/amplify-netflix-staging-60932-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-netflix-staging-60932-deployment",
+      "UnauthRoleName": "amplify-netflix-staging-60932-unauthRole",
+      "StackName": "amplify-netflix-staging-60932",
+      "StackId": "arn:aws:cloudformation:us-west-2:035607060023:stack/amplify-netflix-staging-60932/558ff5d0-1a05-11ed-b2a3-0add2e38f865",
+      "AmplifyAppId": "d3ccomoj2syayg"
+    },
+    "categories": {
+      "auth": {
+        "NetFlix": {}
+      }
+    }
+  }
+}
