@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Episode } from "../../types";
 import { Video } from "expo-av";
 import styles from "./styles";
+import { Storage } from "aws-amplify";
 import { Playback } from "expo-av/build/AV";
 interface VideoPlayerProps {
   episode: Episode;
@@ -21,9 +22,21 @@ const VideoPlayer = (props: VideoPlayerProps) => {
     }
     (async () => {
       await video?.current.unloadAsync();
-      await video?.current.loadAsync({ uri: episode.video }, {}, false);
+      await video?.current.loadAsync({ uri: videoUrl }, {}, false);
     })();
+  }, [videoUrl]);
+
+  useEffect(() => {
+    if (episode.video.startsWith("http")) {
+      setVideoUrl(episode.video);
+      return;
+    }
+    Storage.get("movies/" + episode.video).then(setVideoUrl);
   }, [episode]);
+
+  if (videoUrl === "") {
+    return null;
+  }
 
   return (
     <View>
@@ -35,7 +48,7 @@ const VideoPlayer = (props: VideoPlayerProps) => {
         posterStyle={{
           resizeMode: "cover",
         }}
-        source={{ uri: episode.video }}
+        source={{ uri: videoUrl }}
         useNativeControls
         resizeMode="contain"
         onPlaybackStatusUpdate={(status) => setStatus(() => status)}

@@ -1,9 +1,15 @@
-import { View, Text, Pressable, FlatList } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import React, { useState, useEffect } from "react";
 import styles from "./style";
 import { Image } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import movie from "../../assets/data/movie";
+// import movie from "../../assets/data/movie";
 import {
   MaterialIcons,
   Entypo,
@@ -15,30 +21,79 @@ import {
 import EposodeItem from "../../components/EpisodeItem";
 import VideoPlayer from "../../components/VideoPlayer";
 import { useRoute } from "@react-navigation/native";
+import { DataStore } from "aws-amplify";
+import { Episode, Movie, Season } from "../../src/models";
 
-const firstEpisode = movie.seasons.items[0].episodes.items[0];
-const firstSeason = movie.seasons.items[0];
+// const firstEpisode = movie.seasons.items[0].episodes.items[0];
+// const firstSeason = movie.seasons.items[0];
 
 const MovieDetailsScreen = () => {
   const route = useRoute();
-  const seasonName = movie.seasons.items.map((s) => s.name);
-
-  const [currentSeason, setCurrentSeason] = useState(firstSeason);
-  const [currentEpisode, setCurrentEpisode] = useState(
-    firstSeason.episodes.items[0]
+  const { id } = route.params;
+  const [movie, setMovie] = useState<Movie | undefined>(undefined);
+  const [seasons, setSeasons] = useState<Season[]>([]);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [currentSeason, setCurrentSeason] = useState<Season | undefined>(
+    undefined
   );
+  const [currentEpisode, setCurrentEpisode] = useState<Episode | undefined>(
+    undefined
+  );
+  const seasonName = seasons ? seasons.map((s) => s.name) : [];
+
+  useEffect(() => {
+    const fetchMovie = async () => {
+      setMovie(await DataStore.query(Movie, id));
+    };
+
+    fetchMovie();
+  }, []);
+
+  useEffect(() => {
+    if (!movie) {
+      return;
+    }
+    const fetchSeasons = async () => {
+      let movieSeasons = (await DataStore.query(Season)).filter(
+        (s) => s.movieID == movie.id
+      );
+
+      setSeasons(movieSeasons);
+      setCurrentSeason(movieSeasons[0]);
+    };
+    fetchSeasons();
+  }, [movie]);
+
+  useEffect(() => {
+    if (!currentSeason) {
+      return;
+    }
+    const fetchEpisodes = async () => {
+      const seasonEpisodes = (await DataStore.query(Episode)).filter(
+        (e) => e?.seasonID == currentSeason?.id
+      );
+      setEpisodes(seasonEpisodes);
+      setCurrentEpisode(seasonEpisodes[0]);
+    };
+    fetchEpisodes();
+  }, [currentSeason]);
+
+  if (!movie) {
+    return <ActivityIndicator />;
+  }
+
   return (
     <View style={{ flex: 1 }}>
-      <VideoPlayer episode={currentEpisode} />
+      {currentEpisode && <VideoPlayer episode={currentEpisode} />}
       <FlatList
-        data={currentSeason.episodes.items}
+        data={episodes}
         renderItem={({ item }) => (
           <EposodeItem episode={item} onPress={setCurrentEpisode} />
         )}
         ListHeaderComponent={
           <>
             <View style={{ padding: 15 }}>
-              <Text style={styles.title}>{movie.title}</Text>
+              <Text style={styles.title}>{movie.titile}</Text>
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.match}>98% match</Text>
                 <Text style={styles.year}>{movie.year}</Text>
@@ -48,7 +103,6 @@ const MovieDetailsScreen = () => {
                 <Text style={styles.year}>{movie.numberOfSeasons} Seasons</Text>
                 <MaterialIcons name="hd" size={24} color="white" />
               </View>
-              {/* play button  */}
               <Pressable
                 style={styles.plyaButton}
                 onPress={() => console.log("Play")}
@@ -58,7 +112,6 @@ const MovieDetailsScreen = () => {
                   Play
                 </Text>
               </Pressable>
-              {/* download button */}
               <Pressable
                 style={styles.downloadButton}
                 onPress={() => console.log("Play")}
@@ -91,18 +144,20 @@ const MovieDetailsScreen = () => {
               </View>
             </View>
 
-            <Picker
-              selectedValue={currentSeason.name}
-              onValueChange={(itemValue, itemIndex) => {
-                setCurrentSeason(movie.seasons.items[itemIndex]);
-              }}
-              style={{ color: "white", width: 135 }}
-              dropdownIconColor={"white"}
-            >
-              {seasonName.map((s) => (
-                <Picker.Item label={s} value={s} key={s} />
-              ))}
-            </Picker>
+            {currentSeason && (
+              <Picker
+                selectedValue={currentSeason.name}
+                onValueChange={(itemValue, itemIndex) => {
+                  setCurrentSeason(seasons[itemIndex]);
+                }}
+                style={{ color: "white", width: 135 }}
+                dropdownIconColor={"white"}
+              >
+                {seasonName.map((s) => (
+                  <Picker.Item label={s} value={s} key={s} />
+                ))}
+              </Picker>
+            )}
           </>
         }
       />

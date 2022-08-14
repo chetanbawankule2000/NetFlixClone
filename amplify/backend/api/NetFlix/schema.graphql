@@ -1,0 +1,37 @@
+type Episode @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  title: String!
+  poster: String!
+  duration: String!
+  plot: String
+  video: String!
+  seasonID: ID! @index(name: "bySeason")
+  Season: Season @belongsTo
+}
+
+type Season @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  name: String!
+  Episodes: [Episode] @hasMany(indexName: "bySeason", fields: ["id"])
+  movieID: ID! @index(name: "byMovie")
+  Movie: Movie @belongsTo
+}
+
+type Movie @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  titile: String!
+  year: Int
+  numberOfSeasons: Int
+  plot: String
+  cast: String
+  creator: String
+  poster: String!
+  categoryID: ID! @index(name: "byCategory")
+  Seasons: [Season] @hasMany(indexName: "byMovie", fields: ["id"])
+}
+
+type Category @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  title: String!
+  Movies: [Movie] @hasMany(indexName: "byCategory", fields: ["id"])
+}

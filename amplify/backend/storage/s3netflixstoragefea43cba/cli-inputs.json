@@ -1,0 +1,10 @@
+{
+  "resourceName": "s3netflixstoragefea43cba",
+  "bucketName": "netflix-storage-fea43cba",
+  "policyUUID": "ff13f0be",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "READ"
+  ]
+}
